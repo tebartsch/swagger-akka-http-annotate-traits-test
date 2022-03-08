@@ -3,20 +3,24 @@ package com.example.akka.annotateTrait
 import akka.actor.{Actor, ActorLogging}
 import io.swagger.v3.oas.annotations.media.Schema
 
-@Schema(description = "identifier of data value")
 trait Identifier {
   val id: String
 }
+case class IdentifierSwaggerSchema()
 
-@Schema(description = "value")
 trait Value {
   val value: Int
 }
+case class ValueSwaggerSchema()
 
-@Schema(description = "combine identifier and value")
 trait Event extends Identifier with Value
+@Schema(name="Event", description = "combine identifier and value")
+case class EventCaseClass(@Schema(name="identifier", description = "identifier of data value", implementation=classOf[String])
+                          id: IdentifierSwaggerSchema,
+                          @Schema(name="value", description = "data value", implementation=classOf[Int])
+                          value: ValueSwaggerSchema)
 
-@Schema(description = "response to data query")
+@Schema(description = "response to data query", implementation = classOf[EventCaseClass])
 case class Response(event: Event)
 
 case object Request
